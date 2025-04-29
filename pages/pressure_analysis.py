@@ -13,7 +13,8 @@ uploaded_file = st.sidebar.file_uploader(
   "Choose a file",
   "csv"
 )
-assumed_temperature = st.sidebar.number_input('choose assumed temperature in Kelvin (°C + 273)', value=273)
+assumed_temperature = 273 + st.sidebar.number_input('choose assumed temperature in °C', value=15)
+st.sidebar.write("Gewählte Temperatur: ", assumed_temperature, "K")
 pressure_difference_per_height: float = -((PRESSURE_AT_SEA_LEVEL*MOLECULAR_MASS*GRAVITY)/(GAS_CONSTANT*assumed_temperature))
 
 st.title('ASAP')
@@ -28,15 +29,13 @@ if uploaded_file is not None:
   df = df.set_index('sensor').filter(like='Pressure Sensor', axis=0)
   df = df.drop(columns=['value1','value2','value3','value4','value5'])
   df = df.resample('s', on='timestamp').mean()
-  # https://de.wikipedia.org/wiki/Barometrische_H%C3%B6henformel
-  df['assumed_height'] = ( (df['value0'] - PRESSURE_AT_SEA_LEVEL) / pressure_difference_per_height )
-  # https://www.mide.com/air-pressure-at-altitude-calculator
-  df['mide_height'] = 0 + (assumed_temperature / TEMPERATURE_LAPSE_RATE) * ( (df['value0']/PRESSURE_AT_SEA_LEVEL)**( (-GAS_CONSTANT*TEMPERATURE_LAPSE_RATE)/(GRAVITY*MOLECULAR_MASS) ) -1 )
+  df['height'] = assumed_temperature/-TEMPERATURE_LAPSE_RATE * (1-(df['value0']/1013.25)**(1/5.255))
+  # 44330 * 0.0065 = 288.145 ( )
 
   # results
   st.write(f'{df.shape[0]} rows found')
   st.dataframe(df)
-  st.line_chart(df, y=['assumed_height', 'mide_height'])
+  st.line_chart(df, y=['height'])
 
   # conclusion:
   # consistent sensor activity needs a revisit
