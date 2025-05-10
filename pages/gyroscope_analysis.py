@@ -18,7 +18,7 @@ if uploaded_file is not None:
   df = df.set_index('sensor').filter(like='Gyroscope', axis=0)
   df = df.drop(columns=['value3','value4','value5'])
 
-  df = df.resample('10s', on='timestamp').sum()
+  df = df.resample('s', on='timestamp').sum()
   st.write(f'{df.shape[0]} rows found')
   st.dataframe(df)
   st.line_chart(df)

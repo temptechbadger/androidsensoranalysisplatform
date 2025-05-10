@@ -9,16 +9,28 @@ st.subheader('Android Sensor Analysis Platform')
 def get_accelerometer_df(input_df) -> pd.DataFrame:
   return input_df.set_index('sensor').filter(like='Accelerometer', axis=0)
 
-uploaded_file = st.sidebar.file_uploader(
-  "Choose a file",
+sensor_data = st.sidebar.file_uploader(
+  "Upload a sensor.csv file",
   "csv"
 )
 
-if uploaded_file is not None:
-  # data: sensor name, timestamp
-  df = pd.read_csv(uploaded_file, names=['sensor','timestamp','value0','value1','value2','value3','value4','value5'])
-  df['timestamp'] = pd.to_datetime(df['timestamp'],unit='ms')
-  st.dataframe(df)
+location_data = st.sidebar.file_uploader(
+  "Upload a location.csv file",
+  "csv"
+)
 
-  sensors_df = df.sensor.unique()
+if sensor_data is not None:
+  # data: sensor name, timestamp
+  sdf = pd.read_csv(sensor_data, names=['sensor','timestamp','value0','value1','value2','value3','value4','value5'])
+  sdf['timestamp'] = pd.to_datetime(sdf['timestamp'],unit='ms')
+  st.dataframe(sdf)
+
+  sensors_df = sdf.sensor.unique()
   st.dataframe(sensors_df)
+
+if location_data is not None:
+  ldf = pd.read_csv(location_data, names=['timestamp', 'latitude', 'longitude'])
+  ldf['timestamp'] = pd.to_datetime(ldf['timestamp'],unit='ms')
+  st.dataframe(ldf)
+  # fourth decimal for coordinates correlates to 11.1m, thus the size
+  st.map(ldf, size=11)
