@@ -25,7 +25,7 @@ if uploaded_file is not None:
   st.write(f'{df.shape[0]} rows found')
   with st.expander('show table'):
     st.dataframe(df)
-  st.line_chart(df, y=['x', 'y', 'z'])
+  st.line_chart(df, y=['x', 'y', 'z'], color=["#080", "#00f", "#b22"])
 
 # refer to the following graphic for rotation: https://developer.android.com/images/axis_device.png
   st.image('images/axis_device.png')

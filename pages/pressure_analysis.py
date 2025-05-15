@@ -48,8 +48,8 @@ if sensor_data is not None:
   print(sdf)
   # if resampling_enabled:
   #   sdf = sdf.resample('s').agg({'sensor': 'first', 'value0': 'mean'})
-  sdf['height'] = assumed_temperature/-TEMPERATURE_LAPSE_RATE * (1-(sdf['value0']/1013.25)**(1/5.255))
-  # 44330 * 0.0065 = 288.145 ( )
+  sdf['height'] = assumed_temperature/TEMPERATURE_LAPSE_RATE * (1-(sdf['value0']/1013.25)**(1/5.255))
+  # 44330 = 288.145 / -0.0065 ( )
 
 
 if location_data is not None:
@@ -99,6 +99,7 @@ if has_sensor:
   with st.expander('table of cleaned data here'):
     st.dataframe(sdf)
   st.line_chart(sdf, x=None, y=['height'])
+  st.line_chart(sdf, x=None, y=['value0'])
 
 
 if has_location:

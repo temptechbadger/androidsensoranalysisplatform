@@ -21,7 +21,7 @@ location_data = st.sidebar.file_uploader(
 
 if sensor_data is not None:
   # data: sensor name, timestamp
-  sdf = pd.read_csv(sensor_data, names=['sensor','timestamp','value0','value1','value2','value3','value4','value5'])
+  sdf = pd.read_csv(sensor_data, names=['sensor','timestamp','value0','value1','value2','value3','value4','value5','value6','value7','value8','value9','value10','value11','value12','value13','value14','value15'])
   sdf['timestamp'] = pd.to_datetime(sdf['timestamp'],unit='ms')
   st.dataframe(sdf)
 
