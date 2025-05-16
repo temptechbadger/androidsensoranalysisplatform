@@ -13,7 +13,7 @@ st.subheader('Analysis of the Light Sensor')
 if sensor_data is not None:
   # data: sensor name, timestamp
   df = pd.read_csv(sensor_data, names=['sensor','timestamp','value0','value1','value2','value3','value4','value5','value6','value7','value8','value9','value10','value11','value12','value13','value14','value15'])
-  df['timestamp'] = pd.to_datetime(df['timestamp'],unit='ms')
+  df['timestamp'] = pd.to_datetime(df['timestamp'],unit='ms', utc=True)
   # specific step
   df = df.set_index('sensor').filter(like='Light Sensor', axis=0)
   df = df[['timestamp','value0']]
