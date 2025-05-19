@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 
 # sidebar
-uploaded_file = st.sidebar.file_uploader(
+sensor_data = st.sidebar.file_uploader(
   "Choose a file",
   "csv"
 )
@@ -10,22 +10,20 @@ uploaded_file = st.sidebar.file_uploader(
 st.title('ASAP')
 st.subheader('Analysis of the gravity sensor')
 
-if uploaded_file is not None:
-  # data: sensor name, timestamp
-  df = pd.read_csv(uploaded_file, names=['sensor','timestamp','x','y','z','value3','value4','value5'])
-  df['timestamp'] = pd.to_datetime(df['timestamp'],unit='ms')
-  # specific step
-  # df = df.set_index('sensor').filter(like='Gravity Sensor', axis=0)
-  df = df.set_index('timestamp')
-  df = df[df['sensor'] == "Gravity Sensor"]
+if sensor_data is not None:
+  sdf = pd.read_csv(sensor_data,
+                    names=['sensor','timestamp','x','y','z','value3','value4','value5','value6','value7','value8','value9','value10','value11','value12','value13','value14','value15'],
+                    index_col='timestamp')
+  # timezones tracked only as utc as of now
+  sdf.index = pd.to_datetime(sdf.index, unit='ms', utc=True)
+  sdf = sdf.drop(columns=['value3','value4','value5','value6','value7','value8','value9','value10','value11','value12','value13','value14','value15'])
+  sdf = sdf[sdf['sensor'].str.endswith("Gravity Sensor")]
 
-  df = df.drop(columns=['value3','value4','value5'])
-
-#   df = df.resample('10s', on='timestamp').sum()
-  st.write(f'{df.shape[0]} rows found')
+  # sdf = sdf.resample('10s').agg({'sensor':'first', 'x': 'mean', 'y': 'mean', 'z': 'mean'})
+  st.write(f'{sdf.shape[0]} rows found')
   with st.expander('show table'):
-    st.dataframe(df)
-  st.line_chart(df, y=['x', 'y', 'z'], color=["#080", "#00f", "#b22"])
+    st.dataframe(sdf)
+  st.line_chart(sdf, y=['x', 'y', 'z'], color=["#080", "#00f", "#b22"])
 
 # refer to the following graphic for rotation: https://developer.android.com/images/axis_device.png
   st.image('images/axis_device.png')

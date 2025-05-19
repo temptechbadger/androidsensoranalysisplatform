@@ -12,11 +12,13 @@ st.subheader('Analysis of the Light Sensor')
 
 if sensor_data is not None:
   # data: sensor name, timestamp
-  df = pd.read_csv(sensor_data, names=['sensor','timestamp','value0','value1','value2','value3','value4','value5','value6','value7','value8','value9','value10','value11','value12','value13','value14','value15'])
-  df['timestamp'] = pd.to_datetime(df['timestamp'],unit='ms', utc=True)
-  # specific step
-  df = df.set_index('sensor').filter(like='Light Sensor', axis=0)
-  df = df[['timestamp','value0']]
-  st.write(f'{df.shape[0]} rows found')
-  st.dataframe(df)
-  st.line_chart(df, x='timestamp', y='value0')
+  sdf = pd.read_csv(sensor_data,
+                    names=['sensor','timestamp','value0','value1','value2','value3','value4','value5','value6','value7','value8','value9','value10','value11','value12','value13','value14','value15'],
+                    index_col='timestamp')
+  # timezones tracked only as utc as of now
+  sdf.index = pd.to_datetime(sdf.index, unit='ms', utc=True)
+  sdf = sdf.drop(columns=['value1','value2','value3','value4','value5','value6','value7','value8','value9','value10','value11','value12','value13','value14','value15'])
+  sdf = sdf[sdf['sensor'].str.endswith("Light Sensor")]
+  st.write(f'{sdf.shape[0]} rows found')
+  st.dataframe(sdf)
+  st.line_chart(sdf, y='value0')
