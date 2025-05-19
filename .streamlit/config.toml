@@ -4,3 +4,7 @@ gatherUsageStats = false
 [theme]
 base="dark"
 primaryColor="#0055a5"
+
+[server]
+maxUploadSize = 1000
+maxMessageSize = 1000
