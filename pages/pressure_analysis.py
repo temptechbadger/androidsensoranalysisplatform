@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 import requests
-import numpy as np
 
 from io import StringIO
 
@@ -83,7 +82,7 @@ st.subheader('Analysis of the Pressure Sensor')
 if has_sensor:
   st.write('only sensor data given')
   st.write(f'{sdf.shape[0]} rows found')
-  with st.expander('table of cleaned data here'):
+  with st.expander('show table'):
     st.dataframe(sdf)
   st.line_chart(sdf, x=None, y=['height'])
 
@@ -97,6 +96,6 @@ if has_location:
 
 if has_both:
   st.write('both data available')
-  with st.expander('table of cleaned data'):
+  with st.expander('show table'):
     st.dataframe(df)
   st.line_chart(df, y=['height','elevations'])
